@@ -10,7 +10,11 @@ class PostForm(forms.ModelForm):
 
 class LoginForm(forms.ModelForm):
 
-    password = forms.CharField(widget=forms.PasswordInput)
+    password = forms.CharField(widget=forms.PasswordInput())
+
+    class Meta:
+        model = User
+        fields = ['username', 'password']
 
     def __init__ (self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -18,16 +22,12 @@ class LoginForm(forms.ModelForm):
         self.fields['password'].label = 'Пароль'
 
     def clean(self):
-        username = self.cleaned_data['Username']
-        password = self.cleaned_data['Password']
-        if not User.objects.filter(username=username).exist():
+        username = self.cleaned_data['username']
+        password = self.cleaned_data['password']
+        if not User.objects.filter(username=username).exists():
             raise forms.ValidationError('Пользователь с логином {Username} не найден в системе')
         user = User.objects.filter(username=username).first()
         if user :
             if not user.check_password(password):
                 raise forms.ValidationError('Неверный пароль')
         return self.cleaned_data
-
-class Meta:
-    model = User
-    fields = ['username', 'password']

@@ -2,6 +2,7 @@ from django.urls import path
 from django.conf.urls import url
 from . import views
 from django.conf import settings
+from blog import views
 
 urlpatterns = [
     url(r'^accounts/login/$', views.login, name='login'),
@@ -9,4 +10,6 @@ urlpatterns = [
 
 urlpatterns = [
     path('', views.IndexPage.as_view(), name='index'),
+    path('login', views.LoginView.as_view(), name='login'),
+    path('registr', views.regist, name='regist'),
 ]

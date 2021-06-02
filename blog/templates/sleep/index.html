@@ -1,0 +1,91 @@
+{% extends 'blog/base.html' %}
+{% block title %} SleepApp {% endblock %}
+
+{% block content %}
+<div class="row mt-3 pt-3">
+    <div class="col-md-4">
+        <div class="border p-3 shadow">
+            <h4>Добавь данные</h4>
+            <hr>
+                <input name="day" class="btn btn-success btn-block"
+                       type="submit" value="Утро" onclick="window.location.href='{% url 'index_day' %}'">
+                <input name="night" class="btn btn-success btn-block"
+                       type="submit" value="Вечер" onclick="window.location.href='{% url 'index_night' %}'">
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <h2>Твоя продолжительность сна</h2>
+        <canvas id="myChart" width="400" height="300"></canvas>
+        {% include './chart.html' %}
+
+        <script>
+            {% autoescape off %}
+            const rawSleepRecords = JSON.parse('{{ sleepRecords }}');
+            {% endautoescape %}
+            const ctx = document.getElementById('myChart').getContext('2d');
+
+            createSleepScheduleChart(ctx, rawSleepRecords);
+        </script>
+    </div>
+    <div class="row mt-5 mb-5">
+        <div class="col">
+            <h2>Статистика по сну</h2>
+            {% if hasSleepData %}
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Параметр</th>
+                    <th scope="col">Значение</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Длительность сна</th>
+                    <td>{{ averageSleepDurationTime }} часов</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Среднее время засыпания</th>
+                    <td>{{ averageSleepStartTime }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Среднее время подъема</th>
+                    <td>{{ averageSleepEndTime }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Регулярность сна</th>
+                    <td>{{ sleepStability }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Среднее значение продуктивности за последние 3 дня</th>
+                    <td colspan="2">{{ averageProductivityPerThreeLatestRecords }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            {% else %}
+              <div class="alert alert-info">
+                  Недостаточно данных, чтобы посчитать статистику по сну
+              </div>
+            {% endif %}
+        </div>
+        <div class="col">
+            <h2>Рекомендации ко сну</h2>
+            {% if isMoreSleepRecommended %}
+                <div class="alert alert-warning">Тебе нужно больше спать!</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+    <code>{{ sleepDurationTime }}</code>
+<!--
+{% for sleepRecord in sleepRecordsObjects %}
+    {% with MorningResult=sleepRecord.Morning_Time.isoformat|slice:5 %}
+    {% with NightResult=sleepRecord.Night_Time.isoformat|slice:5 %}
+    <br>
+    {{ MorningResult}} - {{ NightResult }}
+        <br>
+    {% endwith %}
+    {% endwith %}
+{% endfor %}
+-->
+{% endblock %}

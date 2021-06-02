@@ -1,8 +1,15 @@
 {% extends 'blog/base.html' %}
  
 {% block title %}Регистрация{% endblock %}
- 
-{% block content %}
+
+{% block auth %}
+
+{% if error %}
+    <div class="alert alert-danger">
+        {{ error }}
+    </div>
+{% endif %}
+
 <div class="row" style="margin-bottom: auto; margin-top: 20px; margin-left: auto; margin-right: auto;">
     <div class="col-md-6 offset-md-3">
         <h2 class="text-center">Регистрация</h2>

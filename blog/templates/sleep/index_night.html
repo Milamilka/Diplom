@@ -1,0 +1,44 @@
+{% extends 'blog/base.html' %}
+{% load crispy_forms_filters %}
+{% block title %} Day Data {% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row mt-3 pt-3">
+    <div class="col-md-4">
+        <div class="border p-3 shadow">
+            <h4>Данные вечером</h4>
+            {% if is_sleep_record_updated_successfully == True %}
+                <div class="alert alert-success">
+                    Данные успешно сохраненые!
+                </div>
+            {% endif %}
+            <hr>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <input class="btn btn-success btn-block" type="submit" value="Add">
+            </form>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <h2>Во сколько ты ложился</h2>
+        <canvas id="myChart" width="400" height="300"></canvas>
+        {% include './chart.html' %}
+
+        <script>
+            const ctx = document.getElementById('myChart').getContext('2d');
+            {% autoescape off %}
+            const rawSleepRecords = JSON.parse('{{ sleepRecords }}');
+            {% endautoescape %}
+
+            createWakeTimeAndBedTimeChart(ctx, rawSleepRecords, {
+                timeFieldUsedForChartRecords: 'Night_Time',
+                lineBarLabel: 'Время отбоя',
+                lineBarColor: 'rgba(54, 162, 235, 1)',
+            });
+
+        </script>
+    </div>
+</div>
+{% endblock %}

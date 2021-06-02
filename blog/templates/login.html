@@ -1,25 +1,25 @@
 {% extends 'blog/base.html' %}
 {% load crispy_forms_tags %}
-{% block content %}
+{% block auth %}
 
 <div class="row" style="margin-bottom: auto; margin-top: 20px; margin-left: auto; margin-right: auto;">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">
+                <strong> {{message}}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
     <div class="col-md-6 offset-md-3">
+    <form method="POST">
         <h3 class="text-center">Авторизация</h3>
         <hr>
-        <form action="" method="POST">
-            {% csrf_token %}
-            <div class="form-row">
-                <input type="text" name="username" id="username" class="input-text" placeholder="username" required>
-            </div>
-            <br>
-            <div class="form-row">
-                <input type="password" name="password" id="password" class="input-text" placeholder="password" required>
-            </div>
-            {{form|crispy}}
-            <br>
-            <br>
-            <input type="submit" class="btn btn-outline-secondary" value="Войти">
-        </form>
+        {% csrf_token %}
+        {{form|crispy}}
+        <br>
+        <br>
+        <input type="submit" class="btn btn-outline-secondary" value="Войти">
+    </form>
     </div>
 </div> 
 

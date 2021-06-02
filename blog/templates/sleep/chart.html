@@ -1,0 +1,185 @@
+<script>
+const createWakeTimeAndBedTimeChart = (canvasContext, rawSleepRecords, {
+    timeFieldUsedForChartRecords = 'Morning_Time',
+    lineBarLabel = 'Время подъема',
+    lineBarColor = 'rgba(255, 99, 132, 1)'
+} = {}) => {
+    console.log(rawSleepRecords);
+
+    const weekDays = {
+        'monday': 'Понедельник',
+        'tuesday': 'Вторник',
+        'wednesday': 'Среда',
+        'thursday': 'Четверг',
+        'friday': 'Пятница',
+        'saturday': 'Суббота',
+        'sunday': 'Воскресенье',
+    };
+
+    const sleepRecords = rawSleepRecords.map(sleepRecord => {
+        const baseDateString = '2021-01-01T'
+        const sleepRecordTime = sleepRecord[timeFieldUsedForChartRecords];
+        const wakeUpTimeInISOFormat = `${baseDateString}${sleepRecordTime}`;
+
+        const sleepRecordDate = new Date(wakeUpTimeInISOFormat);
+        const sleepRecordTimeUnixSeconds = sleepRecordDate.getTime();
+
+        return { weekDay: sleepRecord.Week_Day, sleepRecordTimeUnixSeconds: sleepRecordTimeUnixSeconds };
+    });
+
+    const formatAsHours = (date) => date.toLocaleTimeString('ru-RU', {
+        hour: '2-digit',
+        minute:'2-digit',
+    })
+
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: Object.values(weekDays),
+            datasets: [{
+                label: lineBarLabel,
+                data: Object.keys(weekDays).map((weekDay) => {
+                    const sleepRecordForWeekDay = sleepRecords.find(
+                        ({ weekDay: sleepRecordWeekDay }) => sleepRecordWeekDay === weekDay
+                    );
+
+                    return sleepRecordForWeekDay?.sleepRecordTimeUnixSeconds ?? null;
+                }),
+                backgroundColor: [
+                    lineBarColor,
+                ],
+                borderColor: [
+                    lineBarColor,
+                ],
+                borderWidth: 3,
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    ticks: {
+                        callback: (value) => {
+                            const sleepRecordTimeEntry = new Date(value);
+
+                            return formatAsHours(sleepRecordTimeEntry);
+                        }
+                    },
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: (context) => {
+                            const recordTime = new Date(context.raw);
+                            return formatAsHours(recordTime);
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+const createSleepScheduleChart = (canvasContext, rawSleepRecords ) => {
+    const weekDays = {
+        'monday': 'Понедельник',
+        'tuesday': 'Вторник',
+        'wednesday': 'Среда',
+        'thursday': 'Четверг',
+        'friday': 'Пятница',
+        'saturday': 'Суббота',
+        'sunday': 'Воскресенье',
+    };
+
+    const sleepRecords = rawSleepRecords.map(sleepRecord => {
+        const baseDateString = '2021-01-01T'
+
+        const sleepRecordMorningTime = sleepRecord.Morning_Time;
+        const sleepRecordMorningTimeInIsoFormat = `${baseDateString}${sleepRecordMorningTime}`;
+        const sleepRecordMorningDate = new Date(sleepRecordMorningTimeInIsoFormat);
+        const sleepRecordMorningTimeUnixSeconds = sleepRecordMorningDate.getTime();
+
+        const sleepRecordNightTime = sleepRecord.Night_Time;
+        const sleepRecordNightTimeInIsoFormat = `${baseDateString}${sleepRecordNightTime}`;
+        const sleepRecordNightDate = new Date(sleepRecordNightTimeInIsoFormat);
+        const sleepRecordNightTimeUnixSeconds = sleepRecordNightDate.getTime();
+
+        return {
+            weekDay: sleepRecord.Week_Day,
+            sleepRecordMorningUnixSeconds: sleepRecordMorningTimeUnixSeconds,
+            sleepRecordNightUnixSeconds: sleepRecordNightTimeUnixSeconds,
+        };
+    });
+
+    const formatAsHours = (date) => date.toLocaleTimeString('ru-RU', {
+        hour: '2-digit',
+        minute:'2-digit',
+    })
+
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: Object.values(weekDays),
+            datasets: [
+            {
+                label: 'Время подъема',
+                data: Object.keys(weekDays).map((weekDay) => {
+                    const sleepRecordForWeekDay = sleepRecords.find(
+                        ({ weekDay: sleepRecordWeekDay }) => sleepRecordWeekDay === weekDay
+                    );
+
+                    return sleepRecordForWeekDay?.sleepRecordMorningUnixSeconds ?? null;
+                }),
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                ],
+                borderWidth: 3,
+            },
+            {
+                label: 'Время отбоя',
+                data: Object.keys(weekDays).map((weekDay) => {
+                    const sleepRecordForWeekDay = sleepRecords.find(
+                        ({ weekDay: sleepRecordWeekDay }) => sleepRecordWeekDay === weekDay
+                    );
+
+                    return sleepRecordForWeekDay?.sleepRecordNightUnixSeconds ?? null;
+                }),
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                ],
+                borderWidth: 3,
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    ticks: {
+                        callback: (value) => {
+                            const sleepRecordTimeEntry = new Date(value);
+
+                            return formatAsHours(sleepRecordTimeEntry);
+                        }
+                    },
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: (context) => {
+                            const recordTime = new Date(context.raw);
+                            return formatAsHours(recordTime);
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+</script>

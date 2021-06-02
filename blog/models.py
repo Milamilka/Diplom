@@ -4,6 +4,7 @@ from django.db import models
 from django.utils import timezone
 from functools import reduce
 from datetime import datetime
+import math
 
 
 class Post(models.Model):
@@ -135,7 +136,7 @@ class SleepAction(models.Model):
             0
         ) / sleepRecordsThatHaveAwakeQualityFourOrFive.count()
 
-        averageSleepStartTimeWholeHours = round(averageSleepStartTimeTotalMinutes / 60, 0)
+        averageSleepStartTimeWholeHours = math.floor(averageSleepStartTimeTotalMinutes / 60)
         averageSleepStartTimeLeftMinutes = averageSleepStartTimeTotalMinutes - averageSleepStartTimeWholeHours * 60;
         # TODO: count average only when Awake_Sleep
 
@@ -144,6 +145,7 @@ class SleepAction(models.Model):
     @staticmethod
     def getAverageSleepEndTime(user):
         sleepRecordsThatHaveAwakeQualityFourOrFive = SleepAction.withUser(user).filter(Awake_Sleep__gte=4).all()
+
         if (sleepRecordsThatHaveAwakeQualityFourOrFive.count() == 0):
             return (0, 0)
 
@@ -153,7 +155,7 @@ class SleepAction(models.Model):
             0
         ) / sleepRecordsThatHaveAwakeQualityFourOrFive.count()
 
-        averageSleepEndTimeWholeHours = round(averageSleepEndTimeTotalMinutes / 60, 0)
+        averageSleepEndTimeWholeHours = math.floor(averageSleepEndTimeTotalMinutes / 60)
         averageSleepEndTimeLeftMinutes = averageSleepEndTimeTotalMinutes - averageSleepEndTimeWholeHours * 60
 
         return int(averageSleepEndTimeWholeHours), int(averageSleepEndTimeLeftMinutes)

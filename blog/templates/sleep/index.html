@@ -5,17 +5,17 @@
 <div class="row mt-3 pt-3">
     <div class="col-md-4">
         <div class="border p-3 shadow">
-            <h4>Добавь данные</h4>
+            <h4><font face="roboto" size="5">Добавь данные</font></h4>
             <hr>
-                <input name="day" class="btn btn-success btn-block"
+                <input name="day" class="btn btn-outline-secondary btn-block"
                        type="submit" value="Утро" onclick="window.location.href='{% url 'index_day' %}'">
-                <input name="night" class="btn btn-success btn-block"
+                <input name="night" class="btn btn-outline-secondary btn-block"
                        type="submit" value="Вечер" onclick="window.location.href='{% url 'index_night' %}'">
         </div>
     </div>
 
     <div class="col-md-8">
-        <h2>Твоя продолжительность сна</h2>
+        <h2><font face="roboto" size="6">Время сна</font></h2>
         <canvas id="myChart" width="400" height="300"></canvas>
         {% include './chart.html' %}
 
@@ -30,7 +30,7 @@
     </div>
     <div class="row mt-5 mb-5">
         <div class="col">
-            <h2>Статистика по сну</h2>
+          <h2><font face="roboto" size="6">Статистика по сну</font></h2>
             {% if hasSleepData %}
               <table class="table">
                 <thead>
@@ -69,10 +69,19 @@
             {% endif %}
         </div>
         <div class="col">
-            <h2>Рекомендации ко сну</h2>
-            {% if isMoreSleepRecommended %}
-                <div class="alert alert-warning">Тебе нужно больше спать!</div>
-            {% endif %}
+          <h2><font face="roboto" size="6">Правила здорового сна</font></h2>
+            <div>
+              Рекомендуемой длительностью сна для ребят в возрасте от 6 до 13 лет является 9-11 часов, для подростков (14-17 лет) составляет 8-10 часов.
+              <br>
+              <p></p>
+              Соблюдай режим. Старайся каждый день ложиться спать в одно и тоже время и, желательно до полуночи.
+              <br>
+              <p></p>
+              Вставай с постели с первым звонком будильника. Поверь, так ты будешь чувствовать себя бодрее, чем если позволишь себе расслабиться и «поваляться еще 5 минут».
+              <br>
+              <p></p>
+              Будьте активен в течение дня, больше ходи пешком и регулярно занимайся спортом. Это поможет тебе не только поддерживать хорошую физическую форму, но и гарантирует крепкий сон.
+            </div>
         </div>
     </div>
 </div>

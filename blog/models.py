@@ -88,20 +88,23 @@ class SleepAction(models.Model):
         sleepEndTimeMinutes = self.Night_Time.minute if self.Night_Time else 0
         sleepEndTimeMinutesTotal = sleepEndTimeHour * 60 + sleepEndTimeMinutes
 
-        return sleepEndTimeMinutesTotal
+        return int(sleepEndTimeMinutesTotal)
 
     def getNightTimeHours(self):
         return round(self.getNightTimeMinutes() / 60, 2)
 
     def getSleepDurationHours(self):
         prevWeekDay = getPrevWeekDay(self.Week_Day)
-        sleepRecordForPrevDay = SleepAction.withUser(self.User).get(Week_Day=prevWeekDay) if SleepAction.withUser(self.User).filter(Week_Day=prevWeekDay).exists() else None
+        sleepRecordForPrevDay = SleepAction.withUser(self.User).get(Week_Day=prevWeekDay) \
+            if SleepAction.withUser(self.User).filter(Week_Day=prevWeekDay, Morning_Time__isnull=False, Night_Time__isnull=False).exists() \
+            else None
         
         if (not sleepRecordForPrevDay):
             return float(0)
 
-        sleepEndTimeMinutesTotal = self.getMorningTimeMinutes()
+
         sleepStartTimeMinutesTotal = sleepRecordForPrevDay.getNightTimeMinutes()
+        sleepEndTimeMinutesTotal = self.getMorningTimeMinutes()
 
         durationTimeMinutes = (1440 - sleepStartTimeMinutesTotal) + sleepEndTimeMinutesTotal
         durationTimeHours = durationTimeMinutes / 60
@@ -110,16 +113,22 @@ class SleepAction(models.Model):
 
     @staticmethod
     def getAverageSleepDuration(user):
-        allSleepRecords = SleepAction.withUser(user).all()
+        userCompleteSleepRecords = SleepAction.withUser(user)\
+            .filter(Morning_Time__isnull=False, Night_Time__isnull=False)\
+            .all()
 
-        if (not allSleepRecords.exists()):
+        if (not userCompleteSleepRecords.exists() or userCompleteSleepRecords.count() == 1):
             return float(0)
+
+        sleepRecordsCount = userCompleteSleepRecords.count() \
+            if userCompleteSleepRecords.count() == 7 \
+            else userCompleteSleepRecords.count() - 1
 
         averageSleepDurationTime = reduce(
             (lambda average, sleepRecord: average + sleepRecord.getSleepDurationHours()),
-            list(allSleepRecords),
+            list(userCompleteSleepRecords),
             0
-        ) / allSleepRecords.count()
+        ) / sleepRecordsCount
 
         return averageSleepDurationTime
 
@@ -144,7 +153,7 @@ class SleepAction(models.Model):
 
     @staticmethod
     def getAverageSleepEndTime(user):
-        sleepRecordsThatHaveAwakeQualityFourOrFive = SleepAction.withUser(user).filter(Awake_Sleep__gte=4).all()
+        sleepRecordsThatHaveAwakeQualityFourOrFive = SleepAction.withUser(user).filter(Awake_Sleep__gte=3).all()
 
         if (sleepRecordsThatHaveAwakeQualityFourOrFive.count() == 0):
             return (0, 0)

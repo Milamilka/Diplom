@@ -1,7 +1,7 @@
 {% load static %}
 <html>
     <head>
-        <title>Sleep Diary</title>
+        <title>Дневник сна</title>
         <link rel="stylesheet" href="{% static 'css/blog.css' %}">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Lobster&subset=latin,cyrillic" rel="stylesheet" type="text/css">
@@ -11,30 +11,24 @@
         <script data-require="jquery" data-semver="3.1.1" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     </head>
 
-    <body style="color: black;background-color: #ffffff;">
-        <div class="page-header" style="background-color: #569EFF; height: 25%;">
-            <h1><a href="/">Sleep Diary</a></h1>
+    <body>
+        <div class="page-header" style="background-color: #569EFF; height: 15%;">
+            <h1><a href="/" style="float: left; position: absolute; left: 15%;">Дневник сна</a></h1>
             {% if user.is_authenticated %}
-                <p style="color: #ffffff;">Привет, {{ user.username }}!</p>
-
-                    
-
                 <form action="{% url 'logout' %}">
-                    <button style="float: right; position: absolute; top: 5%; right: 3%;" class="btn btn-outline-light" type="submit">Выйти из пользователя</button>
+                    <button style="float: right; position: absolute; top: 5%; right: 20%; border-radius: 35px; width: 110px;" class="btn btn btn-light btn-sm" type="submit">Выйти</button>
                 </form>
             {% else %}
-                <p style="color: #ffffff;">Чтобы продолжить, давай узнаем кто ты!</p>
-                <div class="logbutton" style="float: right; position: absolute; top: 5%; right: 3%;">
+                <div class="logbutton" style="float: right;">
                     <form action="{% url 'login' %}">
-                        <button style="float: right;" type="submit" class="btn btn-outline-light">Войти</button>
+                        <button style="float: right; position: absolute; top: 5%; right: 35%; border-radius: 35px; width: 80px;" type="submit" class="btn btn btn-light btn-sm">Войти</button>
                     </form>
-                    <br>
+                    
                     <form action="{% url 'regist' %}">
-                        <button style="float: right;" type="submit" class="btn btn-outline-light">Регистрация</button>
+                        <button style="float: right; position: absolute; top: 5%; right: 20%; border-radius: 35px; width: 110px;" type="submit" class="btn btn btn-light btn-sm">Регистрация</button>
                     </form>  
                 </div>
-            {% endif %}
-            
+            {% endif %}    
         </div>
         {% block auth %}
         {% endblock %}
@@ -45,8 +39,30 @@
             
                 {% endblock %}
             </div>
+        {% else %}
+            
         {% endif %}
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     </body>
+    
+    {% if form %}
+    {% else %}
+        {% if user.is_authenticated %}
+        {% else %} 
+            <body>
+                <img src="https://image.freepik.com/free-vector/cute-bear-sleeping-on-the-moon-illustration_41984-294.jpg" weight="300px" height="500px" style="float: left; position: absolute; top: 20%; left: 5%">
+                <div style="margin-left: 45%; margin-top: 5%; font-size:x-large;"><strong>Добро пожаловать!</strong></div>
+                <div style="margin-left: 40%; margin-top: 3%; width: 700px;">
+                    Этот проект про самый сложный и важный процесс — сон человека.<br>
+                    Здоровый сон  – залог здоровья, бодрости, хорошего физического и эмоционального состояния. Именно поэтому так важо следить за его качеством, высыпаться.<br>  
+                    Для этого и создано данное приложения. Скорее регистрируйся, если еще не бывал здесь.<br>
+                    <p></p>
+                    А для того, чтобы подробнее познакомиться с плавилами здорового сна переходи к главе
+                    <p><a href="https://topskills.herokuapp.com/third/third_chapters_HealthySleep/">"Здоровый сон"</a></p>
+                </div>
+            </body>
+        {% endif %}
+    {% endif %}
+    
 </html>

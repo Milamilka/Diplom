@@ -10,16 +10,16 @@
             </div>
         {% endfor %}
     {% endif %}
-    <div class="col-md-6 offset-md-3">
-    <form method="POST">
-        <h3 class="text-center">Авторизация</h3>
-        <hr>
-        {% csrf_token %}
-        {{form|crispy}}
-        <br>
-        <br>
-        <input type="submit" class="btn btn-outline-secondary" value="Войти">
-    </form>
+    <div class="col-md-6 offset-md-3" style="margin-left: auto; margin-right: auto; width: 500px;">
+        <form method="POST">
+            <p class="text-center"><font face="roboto" size="6">Авторизация</font></p>
+            <hr>
+            {% csrf_token %}
+            {{form|crispy}}
+            <br>
+            <br>
+            <input type="submit" class="btn btn-outline-secondary" value="Войти">
+        </form>
     </div>
 </div> 
 
